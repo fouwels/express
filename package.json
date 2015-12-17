@@ -1,0 +1,15 @@
+{
+  "name": "sentcalc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "afinn": "^1.0.3",
+    "coffee-script": "^1.10.0"
+  }
+}
