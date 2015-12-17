@@ -4,13 +4,15 @@
   "description": "",
   "main": "shim.js",
   "scripts": {
-		"start": "node shim.js"
+    "start": "node shim.js",
+		"mon" : "nodemon -e coffee shim.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "afinn": "^1.0.3",
     "coffee-script": "^1.10.0",
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "sqlite3": "^3.1.1"
   }
 }
