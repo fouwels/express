@@ -33,37 +33,44 @@ middleware = (req, res, next) ->
 	next();
 app.use(middleware);
 
-app.get(['/', '/watch/add'], (req, res) ->
-
-)
-
 app.post('/watch/add', (req, res) -> #?keyword=
 	sent = false
 	keyword = req.body['keyword']
 	if keyword == null || keyword == "undefined"
 		res.status(400).send("Invalid request")
 	else
-		db.run('INSERT INTO Watches(keyword) VALUES($key);', {$key:keyword}, (err, data) -> Helpers.returnDb(err, data, res))
+		db.run('INSERT INTO Watches(keyword) VALUES($key);', {$key:keyword}, (err, data) -> Helpers.dbReturn(err, data, res))
 )
 
 app.post('/watch/getAll', (req, res) ->
-	db.all('SELECT * FROM Watches', (err, data) -> Helpers.returnDb(err, data, res))
+	db.all('SELECT * FROM Watches', (err, data) -> Helpers.dbReturn(err, data, res))
 )
 
-app.get('/ping/getForWatch/:id', (req, res) ->
-	console.log('ye')
-)
+#app.post('/ping/add/', (req, res) ->
+#	console.log('ye')
+#)
 
 app.get('/ping/getAll', (req, res) ->
-	console.log('ye')
+	db.all('SELECT * FROM Pings', (err, data) -> Helpers.dbReturn(err, data, res))
+)
+
+app.post('/ping/getForWatch', (req, res) ->
+	db.all('SELECT * FROM Pings WHERE watch_Id == ?', req.body['watch_id'], (err, data) -> Helpers.dbReturn(err, data, res))
+)
+
+app.get('/ping/sim/:id', (req, res) ->
+	db.run('INSERT INTO Pings(watch_Id, tweet, sender) VALUES($watch_Id, $tweet, $sender)', {$watch_Id:req.params.id, $tweet:"bullshit", $sender:"Kae"}, (err, data) -> Helpers.dbReturn(err, data, res))
 )
 
 app.get('*', (req, res) ->
 	res.status(404).send('path -> checkit')
 )
+app.post('*', (req, res) ->
+	res.status(404).send('path -> checkit')
+)
 
 class Helpers
-	@returnDb = (err, data, res) ->
+	@dbReturn = (err, data, res) ->
 		if(err != null)
 			res.status(500).send(err)
 		else
