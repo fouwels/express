@@ -43,17 +43,11 @@ app.post('/watch/add', (req, res) -> #?keyword=
 	if keyword == null || keyword == "undefined"
 		res.status(400).send("Invalid request")
 	else
-		db.run('INSERT INTO Watches(keyword) VALUES($key);', {$key:keyword}, (err, data) ->
-			if(err != null)
-				res.status(500).send(err)
-			else
-				res.status(200).send()
-			)
-
+		db.run('INSERT INTO Watches(keyword) VALUES($key);', {$key:keyword}, (err, data) -> Helpers.returnDb(err, data, res))
 )
 
-app.get('/watch/getAll', (req, res) ->
-	console.log('ye')
+app.post('/watch/getAll', (req, res) ->
+	db.all('SELECT * FROM Watches', (err, data) -> Helpers.returnDb(err, data, res))
 )
 
 app.get('/ping/getForWatch/:id', (req, res) ->
@@ -69,8 +63,11 @@ app.get('*', (req, res) ->
 )
 
 class Helpers
-	@returnDbError = (err, data, res) ->if(err != null)
-		res.status(500).send(err)
+	@returnDb = (err, data, res) ->
+		if(err != null)
+			res.status(500).send(err)
+		else
+			res.status(200).send(data)
 
 server = app.listen 3000, () ->
 	console.log('Listening at http://%s:%s', server.address().address, server.address().port)
