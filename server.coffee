@@ -5,6 +5,9 @@ express = require 'express'
 app = express()
 bodyParser = require 'body-parser'
 
+Watcher = require('./lib/watcher').Watcher
+wt = new Watcher
+
 file = './data/data.db'
 sqlite3 = require('sqlite3').verbose()
 db = new sqlite3.Database(file)
@@ -75,6 +78,8 @@ class Helpers
 			res.status(500).send(err)
 		else
 			res.status(200).send(data)
+
+wt.start()
 
 server = app.listen 3000, () ->
 	console.log('Listening at http://%s:%s', server.address().address, server.address().port)
