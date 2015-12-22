@@ -42,7 +42,7 @@ app.post('/watch/add', (req, res) -> #?keyword=
 	if keyword == null || keyword == "undefined"
 		res.status(400).send("Invalid request")
 	else
-		db.run('INSERT INTO Watches(keyword) VALUES($key);', {$key:keyword}, (err, data) -> Helpers.dbReturn(err, data, res); Helpers.startListener())
+		db.run('INSERT INTO Watches(keyword) VALUES($key);', {$key:keyword}, (err, data) -> Helpers.dbReturn(err, data, res); Helpers.restartListener())
 )
 
 app.post('/watch/getAll', (req, res) ->
@@ -50,7 +50,7 @@ app.post('/watch/getAll', (req, res) ->
 )
 
 app.delete('/watch/clear', (req, res) ->
-	db.run('DELETE FROM Watches', (err, data) -> Helpers.dbReturn(err, data, res); Helpers.startListener())
+	db.run('DELETE FROM Watches', (err, data) -> Helpers.dbReturn(err, data, res); Helpers.restartListener())
 
 )
 
@@ -93,6 +93,13 @@ class Helpers
 				console.log("Error retrieving watches, streamer not started")
 			else
 				wt.start(item.keyword for item in data when item.keyword != "")
+			)
+	@restartListener: () ->
+		db.all('SELECT * FROM Watches', (err, data) ->
+			if(err != null)
+				console.log("Error retrieving watches, streamer not started")
+			else
+				wt.restart(item.keyword for item in data when item.keyword != "")
 			)
 
 Helpers.startListener()

@@ -1,35 +1,43 @@
 require 'coffee-script/register'
 credentials = require '../data/credentials'
-Twitter = require('twitter');
+Twitter = require('twit');
 
 class exports.Watcher
-	t = {}
+	T = {}
+	stream = {}
 	constructor: () ->
-		t = new Twitter {
+
+	onTweet: (tweet) =>
+		#process.stdout.write("[t]")
+		console.log(tweet.text)
+
+	start: (keywords) =>
+		T = new Twitter { #recreating object each time to prevent stream update fuckery
 			consumer_key: credentials.creds.consumer_key
 			consumer_secret: credentials.creds.consumer_secret,
-			access_token_key: credentials.creds.access_token_key,
+			access_token: credentials.creds.access_token_key,
 			access_token_secret: credentials.creds.access_token_secret
 		}
 
-	onTweet: (tweet) =>
-		#if (tweet.text != undefined)
-		process.stdout.write("[t]")
-
-	start: (keywords) =>
 		console.log("(re)starting server")
 		str = ""
+
 		if keywords.length == 0
-			console.log('no watches, starting null keyword stream')
-			str = "oighaeiorhgeroiHJGERIOG" #OH MY GOD SO HACK EY
+			console.log('no watches, watching for /placeholder/ ')
+			str = "asdasdaipjiuwghergiuergerophgeiuwgnwehiruerw;hu" #OH MY GOD SO HACK EY
 		else
 			str += word + "," for word in keywords
-		console.log("word:" + str)
-		t.stream('statuses/filter', {track: str}, (stream) =>
-			stream.on('data', (tweet) => this.onTweet(tweet)
-			)
-		)
+			str = str.slice(0, -1)
 
+		#str = "'" + str + "'"
+		console.log("word:" + str)
+		stream = T.stream('statuses/filter', { track: str})
+		stream.on('tweet', (tweet) => this.onTweet(tweet))
+
+	restart: (keywords) =>
+		stream.stop()
+		this.start(keywords)
+		stream.start()
 
 		###
 		console.log("Started watcher")
