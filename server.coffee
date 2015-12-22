@@ -42,11 +42,16 @@ app.post('/watch/add', (req, res) -> #?keyword=
 	if keyword == null || keyword == "undefined"
 		res.status(400).send("Invalid request")
 	else
-		db.run('INSERT INTO Watches(keyword) VALUES($key);', {$key:keyword}, (err, data) -> Helpers.dbReturn(err, data, res))
+		db.run('INSERT INTO Watches(keyword) VALUES($key);', {$key:keyword}, (err, data) -> Helpers.dbReturn(err, data, res); Helpers.startListener())
 )
 
 app.post('/watch/getAll', (req, res) ->
 	db.all('SELECT * FROM Watches', (err, data) -> Helpers.dbReturn(err, data, res))
+)
+
+app.delete('/watch/clear', (req, res) ->
+	db.run('DELETE FROM Watches', (err, data) -> Helpers.dbReturn(err, data, res); Helpers.startListener())
+
 )
 
 #app.post('/ping/add/', (req, res) ->
@@ -65,6 +70,10 @@ app.get('/ping/sim/:id', (req, res) ->
 	db.run('INSERT INTO Pings(watch_Id, tweet, sender) VALUES($watch_Id, $tweet, $sender)', {$watch_Id:req.params.id, $tweet:"bullshit", $sender:"Kae"}, (err, data) -> Helpers.dbReturn(err, data, res))
 )
 
+app.delete('/ping/clear', (req, res) ->
+	db.run('DELETE * FROM Pings', (err, data) -> Helpers.dbReturn(err, data, res))
+)
+
 app.get('*', (req, res) ->
 	res.status(404).send('path -> checkit')
 )
@@ -73,13 +82,20 @@ app.post('*', (req, res) ->
 )
 
 class Helpers
-	@dbReturn = (err, data, res) ->
+	@dbReturn: (err, data, res) ->
 		if(err != null)
 			res.status(500).send(err)
 		else
 			res.status(200).send(data)
+	@startListener: () ->
+		db.all('SELECT * FROM Watches', (err, data) ->
+			if(err != null)
+				console.log("Error retrieving watches, streamer not started")
+			else
+				wt.start(item.keyword for item in data when item.keyword != "")
+			)
 
-wt.start()
+Helpers.startListener()
 
 server = app.listen 3000, () ->
 	console.log('Listening at http://%s:%s', server.address().address, server.address().port)
