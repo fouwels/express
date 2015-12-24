@@ -29,6 +29,7 @@ db.parallelize( () ->
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.set('view engine', 'jade')
 
 middleware = (req, res, next) ->
 	#res.setHeader('Content-Type', 'application/json')
@@ -36,6 +37,10 @@ middleware = (req, res, next) ->
 	next();
 app.use(middleware);
 
+#-----
+app.get('/watch/add', (req, res) ->
+	res.render()
+)
 app.post('/watch/add', (req, res) -> #?keyword=
 	sent = false
 	keyword = req.body['keyword']
@@ -45,19 +50,27 @@ app.post('/watch/add', (req, res) -> #?keyword=
 		db.run('INSERT INTO Watches(keyword) VALUES($key);', {$key:keyword}, (err, data) -> Helpers.dbReturn(err, data, res); Helpers.restartListener())
 )
 
+app.get('/watch/getAll', (req, res) ->
+	db.all('SELECT * FROM Watches', (err, viewModel) ->
+		res.render('./watch/getAll', {viewModel})
+	)
+)
+
 app.post('/watch/getAll', (req, res) ->
 	db.all('SELECT * FROM Watches', (err, data) -> Helpers.dbReturn(err, data, res))
 )
 
-app.delete('/watch/clear', (req, res) ->
-	db.run('DELETE FROM Watches', (err, data) -> Helpers.dbReturn(err, data, res); Helpers.restartListener())
+app.get('/watch/clear', () ->
 
 )
 
-#app.post('/ping/add/', (req, res) ->
-#	console.log('ye')
-#)
+app.delete('/watch/clear', (req, res) ->
+	db.run('DELETE FROM Watches', (err, data) -> Helpers.dbReturn(err, data, res); Helpers.restartListener())
+)
 
+#-----
+
+#-----
 app.get('/ping/getAll', (req, res) ->
 	db.all('SELECT * FROM Pings', (err, data) -> Helpers.dbReturn(err, data, res))
 )
@@ -73,6 +86,8 @@ app.get('/ping/sim/:id', (req, res) ->
 app.delete('/ping/clear', (req, res) ->
 	db.run('DELETE * FROM Pings', (err, data) -> Helpers.dbReturn(err, data, res))
 )
+
+#----
 
 app.get('*', (req, res) ->
 	res.status(404).send('path -> checkit')
@@ -102,7 +117,7 @@ class Helpers
 				wt.restart(item.keyword for item in data when item.keyword != "")
 			)
 
-Helpers.startListener()
+#Helpers.startListener()
 
 server = app.listen 3000, () ->
 	console.log('Listening at http://%s:%s', server.address().address, server.address().port)

@@ -5,7 +5,7 @@
   "main": "shim.js",
   "scripts": {
     "start": "node shim.js",
-    "mon": "nodemon -e coffee shim.js"
+    "mon": "nodemon -e coffee jade shim.js"
   },
   "author": "",
   "license": "MIT",
@@ -14,6 +14,8 @@
     "body-parser": "^1.14.2",
     "coffee-script": "^1.10.0",
     "express": "^4.13.3",
+    "jade": "^1.11.0",
+    "jade-watch": "^0.1.1",
     "sqlite3": "^3.1.1",
     "twit": "^2.1.1"
   }
