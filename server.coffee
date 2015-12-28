@@ -4,6 +4,7 @@ fs = require 'fs'
 express = require 'express'
 app = express()
 bodyParser = require 'body-parser'
+require 'jade'
 
 Watcher = require('./lib/watcher').Watcher
 wt = new Watcher
@@ -52,6 +53,7 @@ app.post('/watch/add', (req, res) -> #?keyword=
 
 app.get('/watch/getAll', (req, res) ->
 	db.all('SELECT * FROM Watches', (err, viewModel) ->
+		
 		res.render('./watch/getAll', {viewModel})
 	)
 )

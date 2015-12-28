@@ -24,7 +24,7 @@ class exports.Watcher
 
 		if keywords.length == 0
 			console.log('no watches, watching for /placeholder/ ')
-			str = "asdasdaipjiuwghergiuergerophgeiuwgnwehiruerw;hu" #OH MY GOD SO HACK EY
+			str = "asdasdaipjiuwghergiuergerophgeiuwgnwehiruerw;hu" #OH MY GOD SO [HACK]Y
 		else
 			str += word + "," for word in keywords
 			str = str.slice(0, -1)
@@ -35,9 +35,7 @@ class exports.Watcher
 		stream.on('tweet', (tweet) => this.onTweet(tweet))
 
 	restart: (keywords) =>
-		stream.stop()
 		this.start(keywords)
-		stream.start()
 
 		###
 		console.log("Started watcher")

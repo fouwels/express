@@ -1,5 +1,10 @@
-html
+html(lang="en")
 	head
 	
+	
 	body
-		h1 yo
+		hr
+	
+		ul
+			each val in viewModel
+				li=val.id + ':'  + val.keyword

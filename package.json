@@ -1,21 +1,20 @@
 {
   "name": "sentcalc",
   "version": "1.0.0",
-  "description": "",
+  "description": "ye",
   "main": "shim.js",
   "scripts": {
     "start": "node shim.js",
-    "mon": "nodemon -e coffee jade shim.js"
+    "mon": "nodemon -e coffee shim.js"
   },
   "author": "",
   "license": "MIT",
+	"repository": "https://github.com/kfwls/express",
   "dependencies": {
     "afinn": "^1.0.3",
     "body-parser": "^1.14.2",
     "coffee-script": "^1.10.0",
     "express": "^4.13.3",
-    "jade": "^1.11.0",
-    "jade-watch": "^0.1.1",
     "sqlite3": "^3.1.1",
     "twit": "^2.1.1"
   }
