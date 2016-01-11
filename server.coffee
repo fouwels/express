@@ -53,7 +53,7 @@ app.post('/watch/add', (req, res) -> #?keyword=
 
 app.get('/watch/getAll', (req, res) ->
 	db.all('SELECT * FROM Watches', (err, viewModel) ->
-		
+
 		res.render('./watch/getAll', {viewModel})
 	)
 )
